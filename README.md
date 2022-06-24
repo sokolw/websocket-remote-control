@@ -1,7 +1,6 @@
 Project: **websocket-remote-control**
-https://github.com/nodejs/node-gyp#installation
-
-Before install `robotjs`
+- `Use Node.js version: LTS 16.15.0`
+- Written in Windows 10 Enterprise LTSC 2019
 
 ## Please ensure you have the required dependencies before installing:
 
@@ -21,30 +20,28 @@ Install node-gyp using npm:
 npm install -g node-gyp
 ```
 
+[robotjs info](https://github.com/octalmage/robotjs)
+
 ## Installation
 1. Clone/download repo
-2. `npm install`
+2. `npm i`
 
 ## Usage
 **Development**
 
-`npm run start:dev`
-
-* App served @ `http://localhost:8080` with nodemon
+`npm run start:dev` 
+* with `nodemon`
+* Socket server served @ `http://localhost:8080`
+* Static server served @ `http://localhost:5000`
 
 **Production**
 
 `npm run start`
 
-* App served @ `http://localhost:8080` without nodemon
+* without `nodemon`
+* Socket server served @ `http://localhost:8080`
+* Static server served @ `http://localhost:5000`
 
 ---
-
-**All commands**
-
-Command | Description
---- | ---
-`npm run dev` | App served @ `http://localhost:8080` with nodemon
-`npm run start` | App served @ `http://localhost:8080` without nodemon
 
 **Note**: replace `npm` with `yarn` in `package.json` if you use yarn.
