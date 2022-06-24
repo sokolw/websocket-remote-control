@@ -1,28 +1,36 @@
 import http from 'http';
-import { WebSocketServer, ServerOptions } from 'ws';
+import ws, { WebSocketServer, ServerOptions, createWebSocketStream } from 'ws';
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import fs from 'fs';
 import { StatusCode } from './StatusCode.js';
+import { QueueStream } from './QueueStream.js';
+import stream from 'stream';
+import EventEmitter from 'events';
+import { MangerStream } from './MangerStream.js';
 
-export class ServerFactory {
+export class ServerFactory extends EventEmitter{
   public readonly portWebsocket: ServerOptions;
   public readonly port: number;
   private mainServer: http.Server | null;
   private webSocketServer: WebSocketServer | null;
   private pathToDirFront: string;
+  private queue: stream.Duplex;
+  private manager: stream.Duplex;
 
   constructor(port: number) {
+    super()
     this.portWebsocket = { port: 8080 };
     this.port = port;
     this.pathToDirFront = this.getPathToDirFront();
     this.mainServer = null;
     this.webSocketServer = null;
+    this.queue = new QueueStream();
+    this.manager = new MangerStream(this);
   }
 
   public start(): void {
     this.initDispose();
-    console.log(this.pathToDirFront)
     this.startMainServer();
     this.startWebSocketServer();
   }
@@ -56,8 +64,36 @@ export class ServerFactory {
     this.webSocketServer = new WebSocketServer(this.portWebsocket);
     this.webSocketServer.on('connection', ws => {
       console.log('Connection successful!');
-      ws.on('message', data => {
-        ws.send(data.toString());
+      const stream: stream.Duplex = createWebSocketStream(ws, { encoding : 'utf-8', decodeStrings: false});
+      stream.on('data', data => {
+        if (data !== null){
+          this.queue.write(data.toString());
+        }
+        const temp = this.queue.read();
+        console.log(temp, 'data from queue');
+        if (temp !== null) {
+          this.manager.write(temp);
+        }
+      });
+
+      const dataIsReadyHandler = () => {
+        const readyData = this.manager.read();
+        
+        if (readyData !== null){
+          stream.write(readyData.toString());
+          console.log(readyData.toString());
+        }
+      };
+
+      this.on('dataIsReady', dataIsReadyHandler);
+
+      ws.once('close',() => {
+        console.log('Websok clokse')
+        this.removeListener('dataIsReady', dataIsReadyHandler);
+        if(!stream.destroyed){
+          stream.destroy();
+          console.log('stream.destroy();')
+        }
       });
     });
   }
