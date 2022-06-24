@@ -70,7 +70,6 @@ export class ServerFactory extends EventEmitter{
           this.queue.write(data.toString());
         }
         const temp = this.queue.read();
-        console.log(temp, 'data from queue');
         if (temp !== null) {
           this.manager.write(temp);
         }
@@ -78,21 +77,19 @@ export class ServerFactory extends EventEmitter{
 
       const dataIsReadyHandler = () => {
         const readyData = this.manager.read();
-        
         if (readyData !== null){
           stream.write(readyData.toString());
-          console.log(readyData.toString());
         }
       };
 
       this.on('dataIsReady', dataIsReadyHandler);
 
       ws.once('close',() => {
-        console.log('Websok clokse')
+        console.log('Connection is close!');
         this.removeListener('dataIsReady', dataIsReadyHandler);
         if(!stream.destroyed){
           stream.destroy();
-          console.log('stream.destroy();')
+          console.log('WSStream destroyed!')
         }
       });
     });

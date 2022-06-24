@@ -35,25 +35,29 @@ export class MangerStream extends stream.Duplex {
   }
 
   async _write(chunk: any, enc: BufferEncoding, next: (error?: Error | null) => void): Promise<void> {
-    if (chunk !== null && chunk !== undefined) {
-      const parsedData = this.parseData(chunk.toString());
-      if (parsedData !== null) {
-        const executionResult: Point | undefined | string = await this.mapCommands.get(parsedData.command)(parsedData.value);
-        console.log(parsedData, 'manager write ', executionResult);
-        if (executionResult instanceof Point) {
-          this.data.push(`${RemoteCommands.MousePosition} ${executionResult.x},${executionResult.y}`);
-        } else if (typeof executionResult === 'string') {
-          this.data.push(`${RemoteCommands.PrintScrn} ${executionResult}`);
-        } else {
-          this.data.push(parsedData.command);
-        }
-
-        if (this.data !== 0) {
-          this.server.emit('dataIsReady');
+    try {
+      if (chunk !== null && chunk !== undefined) {
+        const parsedData = this.parseData(chunk.toString());
+        if (parsedData !== null) {
+          const executionResult: Point | undefined | string = await this.mapCommands.get(parsedData.command)(parsedData.value);
+          if (executionResult instanceof Point) {
+            this.data.push(`${RemoteCommands.MousePosition} ${executionResult.x},${executionResult.y}`);
+          } else if (typeof executionResult === 'string') {
+            this.data.push(`${RemoteCommands.PrintScrn} ${executionResult}`);
+          } else {
+            this.data.push(parsedData.command);
+          }
+  
+          if (this.data !== 0) {
+            this.server.emit('dataIsReady');
+          }
         }
       }
+      next();
+    } catch (error) {
+      next();
     }
-    next();
+    
   }
 
   _read(size: number): void {
