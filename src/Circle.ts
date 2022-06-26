@@ -1,4 +1,4 @@
-import { IShape } from "./IShape.js";
+import { IShape } from "./IShape";
 
 export class Circle implements IShape {
   public size: number;

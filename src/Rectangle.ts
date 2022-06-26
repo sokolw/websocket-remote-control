@@ -1,4 +1,4 @@
-import { IShape } from "./IShape.js";
+import { IShape } from "./IShape";
 
 export class Rectangle implements IShape{
   public size?: number;

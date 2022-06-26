@@ -1,4 +1,4 @@
-import { ServerFactory } from './ServerFactory.js';
+import { ServerFactory } from './ServerFactory';
 import { config } from "dotenv";
 
 const setEnv = () : void => {

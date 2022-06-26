@@ -3,11 +3,11 @@ import ws, { WebSocketServer, ServerOptions, createWebSocketStream } from 'ws';
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import fs from 'fs';
-import { StatusCode } from './StatusCode.js';
-import { QueueStream } from './QueueStream.js';
+import { StatusCode } from './StatusCode';
+import { QueueStream } from './QueueStream';
 import stream from 'stream';
 import EventEmitter from 'events';
-import { MangerStream } from './MangerStream.js';
+import { MangerStream } from './MangerStream';
 
 export class ServerFactory extends EventEmitter{
   public readonly portWebsocket: ServerOptions;
@@ -96,9 +96,7 @@ export class ServerFactory extends EventEmitter{
   }
 
   private getPathToDirFront(): string {
-    const pathToCurrentFile: string = fileURLToPath(import.meta.url);
-    const pathToCurrentDir: string = dirname(pathToCurrentFile);
-    return path.join(pathToCurrentDir, '..');
+    return path.join(__dirname, '..');
   }
 
   private initDispose(): void {

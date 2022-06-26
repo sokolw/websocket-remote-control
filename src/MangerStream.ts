@@ -1,13 +1,13 @@
 import stream from "stream";
-import { RemoteCommands } from "./RemoteCommands.js";
-import { Point } from "./Point.js";
-import { ServerFactory } from './ServerFactory.js';
-import { IShape } from "./IShape.js";
-import { Circle } from "./Circle.js";
-import { Rectangle } from "./Rectangle.js";
-import { Square } from "./Square.js";
-import { MouseController } from "./MouseController.js";
-import { ImageCreator } from "./ImageCreator.js";
+import { RemoteCommands } from "./RemoteCommands";
+import { Point } from "./Point";
+import { ServerFactory } from './ServerFactory';
+import { IShape } from "./IShape";
+import { Circle } from "./Circle";
+import { Rectangle } from "./Rectangle";
+import { Square } from "./Square";
+import { MouseController } from "./MouseController";
+import { ImageCreator } from "./ImageCreator";
 
 export class MangerStream extends stream.Duplex {
   data: any = [];

@@ -1,7 +1,7 @@
-import { Point } from "./Point.js";
-import { Circle } from './Circle.js';
-import { Rectangle } from "./Rectangle.js";
-import { Square } from "./Square.js";
+import { Point } from "./Point";
+import { Circle } from './Circle';
+import { Rectangle } from "./Rectangle";
+import { Square } from "./Square";
 import robot from 'robotjs';
 
 export class MouseController {

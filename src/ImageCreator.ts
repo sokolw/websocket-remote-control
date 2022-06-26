@@ -1,6 +1,6 @@
 import Jimp from 'jimp';
 import robot from 'robotjs';
-import { Point } from './Point.js';
+import { Point } from './Point';
 
 export class ImageCreator {
   public async createScreenshot(): Promise<string> {

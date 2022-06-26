@@ -2,9 +2,8 @@
   "name": "websocket-remote-control",
   "version": "1.0.0",
   "description": "Remote control with websocket",
-  "type": "module",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "tsc&&node dist/index.js",
     "start:dev": "nodemon src/index.ts"
   },
   "repository": {
