@@ -20,7 +20,7 @@ export class ServerFactory extends EventEmitter{
 
   constructor(port: number) {
     super()
-    this.portWebsocket = { port: 8080 };
+    this.portWebsocket = { port: +process.env.WS_PORT! || 8080 };
     this.port = port;
     this.pathToDirFront = this.getPathToDirFront();
     this.mainServer = null;
@@ -56,14 +56,17 @@ export class ServerFactory extends EventEmitter{
     });
 
     this.mainServer.listen(this.port, () => {
-      console.log(`Start static http server on the ${this.port} port!`);
+      console.log(`Started static http server on the ${this.port} port!`);
     });
   }
 
   private startWebSocketServer() {
     this.webSocketServer = new WebSocketServer(this.portWebsocket);
+    this.webSocketServer.once('listening', ()=> {
+      console.log(`Started web socket server on the ${this.portWebsocket.port} port!`);
+    })
     this.webSocketServer.on('connection', ws => {
-      console.log('Connection successful!');
+      console.log('WSS Connection successful!');
       const stream: stream.Duplex = createWebSocketStream(ws, { encoding : 'utf-8', decodeStrings: false});
       stream.on('data', data => {
         if (data !== null){
@@ -85,11 +88,11 @@ export class ServerFactory extends EventEmitter{
       this.on('dataIsReady', dataIsReadyHandler);
 
       ws.once('close',() => {
-        console.log('Connection is close!');
+        console.log('WSS Connection is close!');
         this.removeListener('dataIsReady', dataIsReadyHandler);
         if(!stream.destroyed){
           stream.destroy();
-          console.log('WSStream destroyed!')
+          console.log('WSS Stream destroyed!')
         }
       });
     });
