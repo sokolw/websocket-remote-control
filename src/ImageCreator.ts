@@ -1,28 +1,28 @@
-import Jimp from 'jimp';
-import robot from 'robotjs';
-import { Point } from './Point';
+import { mouse, Region, screen } from '@nut-tree/nut-js';
+import { imageToJimp } from '@nut-tree/nut-js/dist/lib/provider/io/imageToJimp.function';
 
 export class ImageCreator {
   public async createScreenshot(): Promise<string> {
-    const mousePoint: Point = robot.getMousePos();
-    const size: number = 200;
-    const image: robot.Bitmap = robot.screen.capture(
-      mousePoint.x - size / 2,
-      mousePoint.y - size / 2,
-      size, size
-    );
+    const mousePosition = await mouse.getPosition();
+    const size = 200;
+    const mainScreenSize = { height: await screen.height(), width: await screen.width() };
+    const left = ImageCreator.getBorderOffset(mousePosition.x - size / 2, size, mainScreenSize.width);
+    const top = ImageCreator.getBorderOffset(mousePosition.y - size / 2, size, mainScreenSize.height);
+    const image = await screen.grabRegion(new Region(left, top, size, size));
+    const jimp = imageToJimp(image);
+    const base64 = (await jimp.getBase64Async('image/png')).split(',')[1];
+    return base64;
+  }
 
-    for(let i = 0; i < image.image.length; i++) {
-      if (i % 4 === 0) {
-        const temp = image.image[i];
-        image.image[i] = image.image[i + 2];
-        image.image[i + 2] = temp;
-      }
+  public static getBorderOffset(sideValue: number, size: number, screenLength: number): number {
+    if (sideValue < 0) {
+      return 0;
     }
 
-    const jimp = new Jimp({ data: image.image, width: size, height: size });
-    const base64 = (await jimp.getBase64Async(Jimp.MIME_PNG)).split(',')[1];
+    if (sideValue + size > screenLength) {
+      return screenLength - size;
+    }
 
-    return base64;
+    return sideValue;
   }
 }
