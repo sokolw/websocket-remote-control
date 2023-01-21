@@ -1,21 +1,21 @@
-import stream from "stream";
-import { RemoteCommands } from "./RemoteCommands";
-import { Point } from "./Point";
+import stream from 'stream';
+import { RemoteCommands } from './RemoteCommands';
+import { Point } from './Point';
 import { ServerFactory } from './ServerFactory';
-import { IShape } from "./IShape";
-import { Circle } from "./Circle";
-import { Rectangle } from "./Rectangle";
-import { Square } from "./Square";
-import { MouseController } from "./MouseController";
-import { ImageCreator } from "./ImageCreator";
+import { IShape } from './IShape';
+import { Circle } from './Circle';
+import { Rectangle } from './Rectangle';
+import { Square } from './Square';
+import { MouseController } from './MouseController';
+import { ImageCreator } from './ImageCreator';
 
 export class MangerStream extends stream.Duplex {
   data: any = [];
   private server: ServerFactory;
   private mapCommands: Map<string, any>;
   private mouseController: MouseController;
-  private imageCreator: ImageCreator
-  
+  private imageCreator: ImageCreator;
+
   constructor(server: ServerFactory) {
     super();
     this.server = server;
@@ -39,7 +39,9 @@ export class MangerStream extends stream.Duplex {
       if (chunk !== null && chunk !== undefined) {
         const parsedData = this.parseData(chunk.toString());
         if (parsedData !== null) {
-          const executionResult: Point | undefined | string = await this.mapCommands.get(parsedData.command)(parsedData.value);
+          const executionResult: Point | undefined | string = await this.mapCommands.get(parsedData.command)(
+            parsedData.value
+          );
           if (executionResult instanceof Point) {
             this.data.push(`${RemoteCommands.MousePosition} ${executionResult.x},${executionResult.y}`);
           } else if (typeof executionResult === 'string') {
@@ -47,7 +49,7 @@ export class MangerStream extends stream.Duplex {
           } else {
             this.data.push(parsedData.command);
           }
-  
+
           if (this.data !== 0) {
             this.server.emit('dataIsReady');
           }
@@ -57,41 +59,38 @@ export class MangerStream extends stream.Duplex {
     } catch (error) {
       next();
     }
-    
   }
 
   _read(size: number): void {
     this.push(this.data.shift());
   }
 
-  
-
-  private parseData (command: string) : { command: string; value: Point | IShape | void } | null {
+  private parseData(command: string): { command: string; value: Point | IShape | void } | null {
     const space: string = ' ';
     const arr: string[] = command.split(space);
     if (arr.length > 0 && arr.length < 4) {
       if (this.mapCommands.has(arr[0])) {
         switch (arr[0]) {
           case RemoteCommands.MouseUp:
-            return { command: arr[0], value: new Point(0,  parseInt(arr[1], 10))};
+            return { command: arr[0], value: new Point(0, parseInt(arr[1], 10)) };
           case RemoteCommands.MouseDown:
-            return { command: arr[0], value: new Point(0,  parseInt(arr[1], 10))};
+            return { command: arr[0], value: new Point(0, parseInt(arr[1], 10)) };
           case RemoteCommands.MouseLeft:
-            return { command: arr[0], value: new Point(parseInt(arr[1], 10), 0)};
+            return { command: arr[0], value: new Point(parseInt(arr[1], 10), 0) };
           case RemoteCommands.MouseRight:
-            return { command: arr[0], value: new Point(parseInt(arr[1], 10), 0)};
+            return { command: arr[0], value: new Point(parseInt(arr[1], 10), 0) };
           case RemoteCommands.DrawCircle:
-            return { command: arr[0], value: new Circle(parseInt(arr[1], 10))};
+            return { command: arr[0], value: new Circle(parseInt(arr[1], 10)) };
           case RemoteCommands.DrawRectangle:
-            return { command: arr[0], value: new Rectangle(parseInt(arr[1], 10), parseInt(arr[2], 10))};
+            return { command: arr[0], value: new Rectangle(parseInt(arr[1], 10), parseInt(arr[2], 10)) };
           case RemoteCommands.DrawSquare:
-            return { command: arr[0], value: new Square(parseInt(arr[1], 10))};
+            return { command: arr[0], value: new Square(parseInt(arr[1], 10)) };
           case RemoteCommands.MousePosition:
           case RemoteCommands.PrintScrn:
             return { command: arr[0], value: undefined };
         }
       }
     }
-    return null; 
+    return null;
   }
 }
