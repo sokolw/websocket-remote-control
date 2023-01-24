@@ -1,0 +1,37 @@
+{
+  "name": "websocket-remote-control",
+  "version": "1.0.0",
+  "description": "Remote control with websocket",
+  "scripts": {
+    "start": "tsc&&node dist/index.js",
+    "start:dev": "nodemon src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sokolw/websocket-remote-control.git"
+  },
+  "keywords": [
+    "remote",
+    "PC",
+    "server",
+    "control"
+  ],
+  "author": "sokolw",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sokolw/websocket-remote-control/issues"
+  },
+  "homepage": "https://github.com/sokolw/websocket-remote-control#readme",
+  "devDependencies": {
+    "@types/node": "18.11.18",
+    "@types/ws": "8.5.4",
+    "nodemon": "2.0.20",
+    "ts-node": "10.9.1"
+  },
+  "dependencies": {
+    "@nut-tree/nut-js": "2.3.0",
+    "dotenv": "16.0.3",
+    "typescript": "4.9.4",
+    "ws": "8.12.0"
+  }
+}

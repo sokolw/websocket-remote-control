@@ -1,0 +1,31 @@
+# dependencies
+/node_modules
+/test/js
+/test/browsertest/js
+/test/fixtures/temp-*
+/test/temp
+/test/ChangesAndRemovals
+/test/**/dev-defaults.webpack.lock
+/benchmark/js
+/benchmark/fixtures
+/examples/**/dist
+/assembly/**/*.wat
+/assembly/**/*.wasm
+/coverage
+/.nyc_output
+/.jest-cache
+# System Files
+Thumbs.db
+.DS_Store
+[Dd]esktop.ini
+# Logs
+*.log
+.idea
+.vscode
+.cache
+.eslintcache
+/design-layouts
+/dist
+# Links
+*.lnk
+*.PEM
